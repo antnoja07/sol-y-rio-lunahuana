@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Sol y Río Lunahuaná: descubre paisajes, cultura, actividades y experiencias turísticas en el valle de Cañete.">
+  <meta name="theme-color" content="#123f39">
+  <title>Sol y Río Lunahuaná | Naturaleza, cultura y turismo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js" defer></script>
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <div class="connection-banner" id="connectionBanner" hidden role="status"></div>
+  <header class="header" id="inicio">
+    <div class="header-inner container">
+      <a href="#inicio" class="brand" aria-label="Sol y Río Lunahuaná, inicio">
+        <span class="brand-art" aria-hidden="true"><svg viewBox="0 0 44 44" fill="none"><circle cx="22" cy="16" r="9" fill="currentColor"/><path d="M5 31c6-5 11-5 17 0s11 5 17 0M5 38c6-5 11-5 17 0s11 5 17 0" stroke="currentColor" stroke-width="2.7" stroke-linecap="round"/><path d="M22 2v3M7 11l3 2M37 11l-3 2M13 3l2 3M31 3l-2 3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+        <span class="brand-text"><b>SOL <span>Y</span> RÍO</b><small>LUNAHUANÁ · PERÚ</small></span>
+      </a>
+      <button id="menuToggle" class="menu-toggle" type="button" aria-controls="mainNav" aria-expanded="false" aria-label="Mostrar menú"><span></span><span></span><span></span></button>
+      <nav class="nav" id="mainNav" aria-label="Navegación principal">
+        <a href="#inicio">Inicio</a><a href="#atractivos">Atractivos</a><a href="#actividades">Actividades</a><a href="#paquetes">Paquetes</a><a href="#cultura">Cultura</a>
+        <a class="nav-reserve" href="#reservar">Reservar <span aria-hidden="true">↗</span></a>
+        <button type="button" id="openAdmin" class="admin-nav">Administración</button>
+      </nav>
+    </div>
+  </header>
+
+  <main id="publicView">
+    <section class="hero" aria-labelledby="heroTitle">
+      <div class="hero-overlay"></div>
+      <div class="container hero-inner">
+        <div class="hero-content">
+          <div class="eyebrow hero-eyebrow"><span class="eyebrow-rule"></span> UN DESTINO PARA RECORDAR</div>
+          <h1 id="heroTitle">El encanto del valle,<br><em>la magia del río.</em></h1>
+          <p>Descubre Lunahuaná: naturaleza, tradición y experiencias que convierten cada visita en un recuerdo único.</p>
+          <div class="hero-cta"><a class="btn btn-sun" href="#paquetes">Descubrir experiencias <span>↗</span></a><a class="btn btn-outline-light" href="#reservar">Reservar mi visita</a></div>
+        </div>
+        <div class="hero-side"><span class="hero-side-num">01 / 03</span><span class="vertical-line"></span><span>CAÑETE · LIMA · PERÚ</span></div>
+      </div>
+      <div class="hero-bottom container"><span><span class="hero-dot"></span> DESDE LUNAHUANÁ, CON NATURALEZA</span><a href="#bienvenidos">DESLIZA PARA EXPLORAR ↓</a></div>
+    </section>
+
+    <section class="welcome container" id="bienvenidos">
+      <div class="section-headline"><span class="eyebrow dark"><span class="eyebrow-rule"></span> BIENVENIDO A LUNAHUANÁ</span><h2>Hay lugares que se visitan.<br><em>Otros se viven.</em></h2></div>
+      <div class="welcome-right"><p>Rodeado de montañas, aire fresco y el río Cañete, Lunahuaná invita a descubrir sus rincones, su gastronomía y sus costumbres. Encuentra aquí tu próxima experiencia.</p><div class="welcome-places"><div><b>01</b><span>Naturaleza</span></div><div><b>02</b><span>Tradición</span></div><div><b>03</b><span>Experiencias</span></div></div></div>
+    </section>
+
+    <section class="section container" id="atractivos">
+      <div class="section-heading"><div><span class="eyebrow dark"><span class="eyebrow-rule"></span> DESTINOS QUE ENAMORAN</span><h2>Conoce nuestros <em>atractivos</em></h2></div><p>El valle tiene rincones que merecen ser descubiertos.</p></div>
+      <div class="cards-grid attractions-grid" id="attractionsGrid"><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div></div>
+    </section>
+
+    <section class="adventure" id="actividades">
+      <div class="container adventure-inner">
+        <div class="adventure-heading"><span class="eyebrow light"><span class="eyebrow-rule"></span> EXPERIENCIAS EN EL VALLE</span><h2>Una forma distinta<br>de sentir <em>Lunahuaná.</em></h2><p>Explora las actividades disponibles y consulta sus características antes de reservar.</p><a class="text-link" href="#reservar">Solicitar una reserva <span>↗</span></a></div>
+        <div class="adventure-grid" id="activitiesGrid"><div class="skeleton inverse"></div><div class="skeleton inverse"></div><div class="skeleton inverse"></div><div class="skeleton inverse"></div></div>
+      </div>
+    </section>
+
+    <section class="section container packages" id="paquetes">
+      <div class="section-heading"><div><span class="eyebrow dark"><span class="eyebrow-rule"></span> UNA ESCAPADA A TU MEDIDA</span><h2>Paquetes para <em>descubrir</em></h2></div><p>Consulta qué incluye cada plan. Servicios y precios ilustrativos de este proyecto académico.</p></div>
+      <div class="cards-grid packages-grid" id="packagesGrid"><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div></div><p class="photo-notice">Fotografías del entorno de Lunahuaná; no certifican los servicios ofrecidos. La disponibilidad se debe confirmar con un operador.</p>
+    </section>
+
+    <section class="culture" id="cultura">
+      <div class="container culture-grid">
+        <div class="culture-photo"><div class="photo-stamp"><span>☼</span><small>TIERRA DE<br>TRADICIONES</small></div></div>
+        <div class="culture-text"><span class="eyebrow dark"><span class="eyebrow-rule"></span> NUESTRAS RAÍCES</span><h2>El sabor y la esencia<br>de <em>nuestra tierra.</em></h2><p>La agricultura, los productos tradicionales y las costumbres del valle son parte de la experiencia de Lunahuaná.</p><div class="agro-list" id="agroList"><div class="loading-small">Cargando productos del valle…</div></div></div>
+      </div>
+    </section>
+
+    <section class="section festivals container" id="festividades"><div class="section-heading"><div><span class="eyebrow dark"><span class="eyebrow-rule"></span> CULTURA VIVA</span><h2>Celebramos nuestras <em>raíces</em></h2></div><p>Historias, encuentros y celebraciones para conocer la identidad del valle.</p></div><div class="festival-grid" id="festivalsGrid"><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div></div></section>
+
+    <section class="booking" id="reservar"><div class="container booking-layout">
+      <div class="booking-left"><span class="eyebrow light"><span class="eyebrow-rule"></span> PLANEA TU VISITA</span><h2>Tu próximo recuerdo<br>empieza <em>aquí.</em></h2><p>Envía una solicitud con tus datos. Nos pondremos en contacto contigo para coordinar tu visita. Una solicitud no es una reserva confirmada.</p><div class="booking-steps"><span class="step-icon">✦</span><div><strong>Simple y rápido</strong><small>Solo necesitamos cinco datos para comenzar.</small></div></div></div>
+      <form id="bookingForm" class="booking-form"><span class="form-overline">SOL Y RÍO LUNAHUANÁ</span><h3>Solicitar una reserva</h3><p class="form-caption">Completa tus datos y selecciona la experiencia.</p>
+        <label for="bookingName">Nombre completo</label><input type="text" id="bookingName" name="nombre" maxlength="120" autocomplete="name" required placeholder="Ej.: María Rodríguez">
+        <label for="bookingPhone">Teléfono</label><input type="tel" id="bookingPhone" name="telefono" maxlength="20" inputmode="tel" autocomplete="tel" required placeholder="Ej.: 987 654 321">
+        <div class="form-cols"><div><label for="bookingDate">Fecha de visita</label><input type="date" id="bookingDate" name="fecha" required></div><div><label for="bookingPeople">Personas</label><input type="number" id="bookingPeople" name="personas" min="1" max="100" value="2" required></div></div>
+        <label for="bookingOption">Actividad o paquete</label><select id="bookingOption" name="opcion" required><option value="">Selecciona una experiencia</option></select>
+        <button class="btn btn-green form-submit" id="bookingSubmit" type="submit">Enviar solicitud <span>↗</span></button>
+        <p class="feedback" id="bookingFeedback" role="status" aria-live="polite"></p><small class="form-privacy">Tus datos se utilizan para responder a tu solicitud de reserva.</small>
+      </form>
+    </div></section>
+
+    <section class="contact container" id="contacto"><div><span class="eyebrow dark"><span class="eyebrow-rule"></span> ESTAMOS EN CONTACTO</span><h2>¿Tienes alguna <em>consulta?</em></h2><p>Escríbenos y cuéntanos qué necesitas saber sobre Lunahuaná.</p><div class="contact-where" id="publicLocation"><span aria-hidden="true">⌖</span> Lunahuaná, Cañete, Lima, Perú</div><div class="contact-where additional-contact" id="publicPhone" hidden></div><div class="contact-where additional-contact" id="publicEmail" hidden></div></div>
+      <form id="contactForm" class="contact-form"><div class="form-cols"><div><label for="contactName">Nombre</label><input id="contactName" name="nombre" required maxlength="120" placeholder="Tu nombre"></div><div><label for="contactPhone">Teléfono</label><input id="contactPhone" name="telefono" maxlength="20" placeholder="Opcional"></div></div><label for="contactEmail">Correo electrónico</label><input id="contactEmail" name="correo" type="email" maxlength="150" placeholder="Opcional"><label for="contactMessage">Mensaje</label><textarea id="contactMessage" name="mensaje" rows="4" required placeholder="Cuéntanos tu consulta"></textarea><button class="btn btn-green" id="contactSubmit" type="submit">Enviar mensaje <span>↗</span></button><p id="contactFeedback" class="feedback" aria-live="polite" role="status"></p></form>
+    </section>
+  </main>
+
+  <section id="adminView" class="admin-view" hidden aria-labelledby="adminTitle">
+    <div class="container"><div class="admin-top"><div><span class="eyebrow dark"><span class="eyebrow-rule"></span> GESTIÓN DEL PROYECTO</span><h1 id="adminTitle">Panel administrativo</h1><p>Organiza el contenido de Sol y Río Lunahuaná.</p></div><div class="admin-top-actions"><span id="adminIdentity" class="admin-identity" aria-live="polite">Acceso verificado</span><button id="adminLogout" class="btn btn-outline-dark" type="button">Cerrar acceso</button><button id="backToSite" class="btn btn-outline-dark" type="button">← Ver sitio web</button></div></div>
+      <div class="admin-notice"><strong>Administración protegida:</strong> crea, edita y elimina registros directamente desde esta página. Para proteger las reservas y los mensajes, los cambios se autorizan con un enlace de correo electrónico, sin usar contraseña.</div>
+      <div class="admin-welcome"><span class="eyebrow light">CENTRO DE CONTROL</span><div class="admin-welcome-line"><div><h2>Tu negocio, a un clic.</h2><p>Gestiona experiencias, atiende reservas y responde mensajes desde un solo lugar.</p></div><div class="admin-welcome-badge">● Conectado a Supabase</div></div></div>
+      <div class="admin-kpis"><article><span>🏞️</span><small>Atractivos turísticos</small><strong id="statAttractions">—</strong></article><article><span>☼</span><small>Actividades</small><strong id="statActivities">—</strong></article><article><span>✧</span><small>Paquetes</small><strong id="statPackages">—</strong></article><article><span>♧</span><small>Festividades</small><strong id="statFestivals">—</strong></article><article class="admin-kpi-highlight"><span>📅</span><small>Reservas registradas</small><strong id="statBookings">—</strong><small id="statPending">— pendientes</small></article><article class="admin-kpi-highlight"><span>✉</span><small>Mensajes recibidos</small><strong id="statMessages">—</strong><small id="statNewMessages">— nuevos</small></article></div>
+      <div class="admin-content"><div class="admin-toolbar"><div><h2>Gestión del sitio</h2><p>Los cambios se guardan directamente en Supabase y se actualizan en la página.</p></div><button id="adminRefresh" class="btn btn-outline-dark" type="button">↻ Actualizar</button></div>
+      <div class="admin-actionbar"><div class="tabs" role="group" aria-label="Módulos de administración"><button type="button" data-module="atractivos_turisticos" class="active">Atractivos</button><button type="button" data-module="actividades">Actividades</button><button type="button" data-module="paquetes_turisticos">Paquetes</button><button type="button" data-module="agropecuaria">Agropecuaria</button><button type="button" data-module="festividades">Festividades</button><button type="button" data-module="reservas">Reservas</button><button type="button" data-module="mensajes_contacto">Mensajes</button><button type="button" data-module="configuracion">Configuración</button></div><button id="newRecord" class="btn btn-green" type="button">+ Nuevo registro</button></div>
+      <div class="admin-filterbar"><label for="adminSearch"><span>Buscar registros</span><input type="search" id="adminSearch" placeholder="Buscar por nombre, teléfono, estado, descripción…" autocomplete="off"></label><span id="adminRecordCount" class="admin-record-count" aria-live="polite">— registros</span></div><p class="feedback" id="adminFeedback" role="status" aria-live="polite"></p><div class="table-wrap"><table class="admin-table"><thead id="adminHead"><tr><th>Contenido</th><th>Estado</th><th>Acciones</th></tr></thead><tbody id="adminBody"><tr><td colspan="3">Abre un módulo para ver su contenido.</td></tr></tbody></table></div></div>
+      <div class="admin-recent-grid" id="adminRecentGrid">
+        <div class="admin-recent-card"><div class="admin-recent-header"><div><span class="eyebrow dark">SEGUIMIENTO</span><h2>Últimas reservas</h2></div><button class="mini-link" type="button" data-goto-module="reservas">Ver todas →</button></div><div id="adminRecentBookings" class="admin-recent-list"><p class="admin-recent-empty">Se cargarán después de verificar el acceso.</p></div></div>
+        <div class="admin-recent-card"><div class="admin-recent-header"><div><span class="eyebrow dark">BUZÓN</span><h2>Mensajes recientes</h2></div><button class="mini-link" type="button" data-goto-module="mensajes_contacto">Ver todos →</button></div><div id="adminRecentMessages" class="admin-recent-list"><p class="admin-recent-empty">Se cargarán después de verificar el acceso.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer"><div class="container footer-main"><div><a href="#inicio" class="brand footer-brand"><span class="brand-art" aria-hidden="true">☀</span><span class="brand-text"><b>SOL <span>Y</span> RÍO</b><small>LUNAHUANÁ · PERÚ</small></span></a><p>Un valle para descubrir, una historia para recordar.</p></div><div class="footer-links"><a href="#atractivos">Atractivos</a><a href="#actividades">Actividades</a><a href="#paquetes">Paquetes</a><a href="#reservar">Reservas</a></div><div class="footer-local"><strong>Encuéntranos</strong><p>Lunahuaná, Cañete<br>Lima, Perú</p></div></div><div class="container footer-bottom"><span>© <span id="currentYear"></span> Sol y Río Lunahuaná. Proyecto de demostración.</span><span><a href="creditos.html">Créditos fotográficos</a> · Hecho para descubrir el valle</span></div></footer>
+
+  <dialog id="editorDialog" class="editor-dialog"><form id="editorForm"><div class="modal-top"><div><span class="eyebrow dark">ADMINISTRACIÓN</span><h2 id="editorTitle">Nuevo registro</h2></div><button id="closeEditor" type="button" class="close-button" aria-label="Cerrar">×</button></div><p class="editor-intro">Completa los datos y guarda. Los cambios aparecerán en Supabase y en la página.</p><div id="editorFields" class="editor-fields"></div><p class="feedback" id="editorFeedback" role="status" aria-live="polite"></p><div class="modal-actions"><button id="cancelEditor" class="btn btn-outline-dark" type="button">Cancelar</button><button id="saveRecord" class="btn btn-green" type="submit">Guardar cambios →</button></div></form></dialog>
+
+  <dialog id="adminAccessDialog" class="access-dialog" aria-labelledby="accessTitle">
+    <form id="adminAccessForm">
+      <div class="modal-top"><div><span class="eyebrow dark">ACCESO PROTEGIDO</span><h2 id="accessTitle">Área de administración</h2></div><button type="button" id="closeAccess" class="close-button" aria-label="Cerrar">×</button></div>
+      <p class="editor-intro">No necesitas una contraseña. Escribe tu correo autorizado y recibirás un enlace para acceder al panel. La dirección debe coincidir con la configurada como ADMIN_EMAIL en Supabase.</p>
+      <label class="access-label" for="adminEmail">Correo de administración</label>
+      <input type="email" id="adminEmail" name="email" class="access-input" autocomplete="email" required placeholder="tucorreo@ejemplo.com">
+      <p id="accessFeedback" class="feedback" role="status" aria-live="polite"></p>
+      <div class="modal-actions"><button class="btn btn-outline-dark" type="button" id="cancelAccess">Cancelar</button><button class="btn btn-green" id="accessSubmit" type="submit">Enviar enlace a mi correo →</button></div>
+    </form>
+  </dialog>
+</body>
+</html>
