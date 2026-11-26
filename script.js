@@ -607,13 +607,27 @@ async function loadAdminModule() {
   }
 }
 
-function revealAdmin(show) {
-  $('#publicView').hidden=show;
-  $('#adminView').hidden=!show;
+// NAVEGACION_V22: vistas y menús independientes; la autorización sigue en admin-api.
+function closeMainNav() {
   $('#mainNav').classList.remove('open');
   $('#menuToggle').setAttribute('aria-expanded','false');
-  window.scrollTo({top:0,behavior:'smooth'});
-  if(show) drawAdmin();
+}
+
+function revealAdmin(show) {
+  show = Boolean(show && adminAuthorized);
+  $('#publicView').hidden = show;
+  $('#publicFooter').hidden = show;
+  $('#adminView').hidden = !show;
+  $$('#mainNav a, #openAdmin').forEach(el => { el.hidden = show; });
+  $$('[data-admin-nav]').forEach(el => { el.hidden = !show; });
+  $('#mainNav').setAttribute('aria-label', show ? 'Navegación administrativa' : 'Navegación principal');
+  closeMainNav();
+  const url = new URL(window.location.href);
+  if (show) url.hash = 'panel-administrativo';
+  else if (url.hash === '#panel-administrativo') url.hash = '';
+  if (url.href !== window.location.href) history.replaceState(history.state, '', url.pathname + url.search + url.hash);
+  window.scrollTo({top:0,behavior:'instant'});
+  if (show) drawAdmin();
   else forgetAdmin();
 }
 
@@ -763,6 +777,27 @@ function wireEvents(){
   $('#openAdmin').addEventListener('click',openAdminAccess);
   $('#adminLogout').addEventListener('click',signOutAdmin);
   $('#backToSite').addEventListener('click',()=>revealAdmin(false));
+  $('#navPublicSite').addEventListener('click',()=>revealAdmin(false));
+  $('#navAdminLogout').addEventListener('click',signOutAdmin);
+  $('#navAdminPanel').addEventListener('click',()=>{
+    if (!adminAuthorized || $('#adminView').hidden) return;
+    closeMainNav();
+    window.scrollTo({top:0,behavior:'smooth'});
+  });
+  $('#navAdminBookings').addEventListener('click',()=>{
+    if (!adminAuthorized || $('#adminView').hidden) return;
+    closeMainNav();
+    state.activeModule='reservas';
+    $('#adminSearch').value='';
+    loadAdminModule();
+    $('.admin-content').scrollIntoView({behavior:'smooth',block:'start'});
+  });
+  $('.header .brand').addEventListener('click',event=>{
+    if (!$('#adminView').hidden) {
+      event.preventDefault();
+      revealAdmin(false);
+    }
+  });
   $('#bookingForm').addEventListener('submit',sendBooking);
   $('#contactForm').addEventListener('submit',sendContact);
   document.addEventListener('click',event=>{
@@ -799,7 +834,14 @@ function wireEvents(){
   $('#closeEditor').addEventListener('click',()=>$('#editorDialog').close());
   $('#cancelEditor').addEventListener('click',()=>$('#editorDialog').close());
   $('#adminAccessForm').addEventListener('submit',signInAdmin);
-  $('#adminAccessDialog').addEventListener('close',()=>{ $('#adminPassword').value=''; });
+  $('#adminAccessDialog').addEventListener('close',()=>{
+    $('#adminPassword').value='';
+    if ($('#adminView').hidden && window.location.hash === '#panel-administrativo') {
+      const url = new URL(window.location.href);
+      url.hash = '';
+      history.replaceState(history.state,'',url.pathname+url.search);
+    }
+  });
   $('#closeAccess').addEventListener('click',()=>$('#adminAccessDialog').close());
   $('#cancelAccess').addEventListener('click',()=>$('#adminAccessDialog').close());
 }
@@ -815,7 +857,7 @@ async function start(){
         if ($('#editorDialog').open) $('#editorDialog').close();
       }
     });
-    if (new URLSearchParams(window.location.search).get('admin') === '1') await openAdminAccess();
+    if (new URLSearchParams(window.location.search).get('admin') === '1' || window.location.hash === '#panel-administrativo') await openAdminAccess();
   }
   await Promise.all([loadPublicData(),loadPublicConfig()]);
 }

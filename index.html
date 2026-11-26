@@ -26,6 +26,10 @@
         <a href="#inicio">Inicio</a><a href="#atractivos">Atractivos</a><a href="#actividades">Actividades</a><a href="#paquetes">Paquetes</a><a href="#cultura">Cultura</a>
         <a class="nav-reserve" href="#reservar">Reservar <span aria-hidden="true">↗</span></a>
         <button type="button" id="openAdmin" class="admin-nav">Administración</button>
+        <button type="button" id="navAdminPanel" class="nav-reserve admin-mode-link" data-admin-nav hidden>Panel administrativo</button>
+        <button type="button" id="navAdminBookings" class="admin-nav" data-admin-nav hidden>Gestionar reservas</button>
+        <button type="button" id="navPublicSite" class="admin-nav" data-admin-nav hidden>Ver sitio web</button>
+        <button type="button" id="navAdminLogout" class="admin-nav" data-admin-nav hidden>Cerrar sesión</button>
       </nav>
     </div>
   </header>
@@ -108,7 +112,7 @@
     </div>
   </section>
 
-  <footer class="footer"><div class="container footer-main"><div><a href="#inicio" class="brand footer-brand"><span class="brand-art" aria-hidden="true">☀</span><span class="brand-text"><b>SOL <span>Y</span> RÍO</b><small>LUNAHUANÁ · PERÚ</small></span></a><p>Un valle para descubrir, una historia para recordar.</p></div><div class="footer-links"><a href="#atractivos">Atractivos</a><a href="#actividades">Actividades</a><a href="#paquetes">Paquetes</a><a href="#reservar">Reservas</a></div><div class="footer-local"><strong>Encuéntranos</strong><p>Lunahuaná, Cañete<br>Lima, Perú</p></div></div><div class="container footer-bottom"><span>© <span id="currentYear"></span> Sol y Río Lunahuaná. Proyecto de demostración.</span><span><a href="creditos.html">Créditos fotográficos</a> · Hecho para descubrir el valle</span></div></footer>
+  <footer class="footer" id="publicFooter"><div class="container footer-main"><div><a href="#inicio" class="brand footer-brand"><span class="brand-art" aria-hidden="true">☀</span><span class="brand-text"><b>SOL <span>Y</span> RÍO</b><small>LUNAHUANÁ · PERÚ</small></span></a><p>Un valle para descubrir, una historia para recordar.</p></div><div class="footer-links"><a href="#atractivos">Atractivos</a><a href="#actividades">Actividades</a><a href="#paquetes">Paquetes</a><a href="#reservar">Reservas</a></div><div class="footer-local"><strong>Encuéntranos</strong><p>Lunahuaná, Cañete<br>Lima, Perú</p></div></div><div class="container footer-bottom"><span>© <span id="currentYear"></span> Sol y Río Lunahuaná. Proyecto de demostración.</span><span><a href="creditos.html">Créditos fotográficos</a> · Hecho para descubrir el valle</span></div></footer>
 
   <dialog id="editorDialog" class="editor-dialog"><form id="editorForm"><div class="modal-top"><div><span class="eyebrow dark">ADMINISTRACIÓN</span><h2 id="editorTitle">Nuevo registro</h2></div><button id="closeEditor" type="button" class="close-button" aria-label="Cerrar">×</button></div><p class="editor-intro">Completa los datos y guarda. Los cambios aparecerán en Supabase y en la página.</p><div id="editorFields" class="editor-fields"></div><p class="feedback" id="editorFeedback" role="status" aria-live="polite"></p><div class="modal-actions"><button id="cancelEditor" class="btn btn-outline-dark" type="button">Cancelar</button><button id="saveRecord" class="btn btn-green" type="submit">Guardar cambios →</button></div></form></dialog>
 

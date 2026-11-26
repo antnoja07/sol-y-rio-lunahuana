@@ -81,3 +81,6 @@ dialog{max-width:650px;width:calc(100% - 34px);max-height:88vh;overflow:auto;bor
 .festival-card--photo .festival-icon{margin-bottom:13px}
 .festival-photo-missing{min-height:65px;display:flex;align-items:center;justify-content:center}
 @media(max-width:620px){.festival-photo{height:220px}.festival-caption{min-height:0}}
+
+/* NAVEGACION_V22 */
+.admin-mode-link{border:0;font-size:12px;font-weight:700;white-space:nowrap;justify-content:center}.admin-content{scroll-margin-top:105px}
