@@ -2,7 +2,7 @@
    SOL Y RÍO LUNAHUANÁ — script.js
    Visitantes: lectura pública + solicitudes a Supabase.
    Administrador: CRUD directo mediante una Edge Function
-   con verificación de sesión por correo (sin contraseña).
+   con verificación de sesión por correo y contraseña.
    ============================================================ */
 
 // 1. Coloca aquí los datos de Project Settings → API de Supabase.
@@ -128,7 +128,7 @@ function initializeDb() {
     banner('VISTA DEMO: configura SUPABASE_URL y SUPABASE_PUBLISHABLE_KEY en script.js para mostrar los datos de tus tablas y recibir reservas.');
     return;
   }
-  try { db = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}}); connected = true; }
+  try { db = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:false}}); connected = true; }
   catch (error) { console.error(error); banner('No se pudo iniciar Supabase. Revisa tu URL y tu clave publicable.'); }
 }
 
@@ -333,60 +333,21 @@ async function loadPublicConfig() {
 }
 
 // ============================================================
-// ADMINISTRACIÓN SIN CONTRASEÑA.
-// El correo recibe un enlace temporal de Supabase Auth.
-// La Edge Function verifica el usuario y la lista ADMIN_EMAIL.
+// ADMINISTRACIÓN: CORREO Y CONTRASEÑA.
+// El servidor comprueba el UUID y el método de autenticación.
 // ============================================================
 let adminBusy = false;
 let adminAuthorized = false;
-let restoringAdmin = false;
-const adminPendingKey = 'solyrio:admin-access-pending';
 state.adminRows = {};
 
-function adminReturnExpected() {
-  const params = new URLSearchParams(window.location.search);
-  if (params.get('admin') === '1') return true;
-  // El enlace de Gmail puede abrirse en otra pestaña: localStorage conserva
-  // el indicador de retorno sin almacenar contraseñas ni tokens privados.
-  try {
-    const stamp = Number(localStorage.getItem(adminPendingKey) || '0');
-    if (stamp && Date.now() - stamp < 60 * 60 * 1000) return true;
-    if (stamp) localStorage.removeItem(adminPendingKey);
-  } catch { /* El acceso manual siempre sigue disponible. */ }
-  return false;
-}
 function forgetPendingAdmin() {
-  try { localStorage.removeItem(adminPendingKey); } catch { /* opcional */ }
+  try { localStorage.removeItem('solyrio:admin-access-pending'); } catch { /* opcional */ }
   const url = new URL(window.location.href);
   if (url.searchParams.has('admin')) {
     url.searchParams.delete('admin');
     history.replaceState({}, '', url.pathname + url.search + url.hash);
   }
 }
-async function resumeAdminFromEmail() {
-  if (!connected || restoringAdmin || !adminReturnExpected()) return;
-  restoringAdmin = true;
-  try {
-    const { data: { session }, error } = await db.auth.getSession();
-    if (error) throw error;
-    if (!session) return; // Espera a SIGNED_IN si la URL aún se está procesando.
-    await adminRequest('verify');
-    adminAuthorized = true;
-    forgetPendingAdmin();
-    if ($('#adminAccessDialog').open) $('#adminAccessDialog').close();
-    revealAdmin(true);
-    $('#adminIdentity').textContent = session.user?.email || 'Administrador autorizado';
-    await Promise.all([loadAdminStats(), loadAdminModule()]);
-  } catch (error) {
-    console.error('No se pudo abrir el panel después del correo:', error);
-    forgetPendingAdmin();
-    status('#accessFeedback', `No se pudo verificar el acceso: ${error.message}`);
-    if (!$('#adminAccessDialog').open) $('#adminAccessDialog').showModal();
-  } finally {
-    restoringAdmin = false;
-  }
-}
-
 
 const adminTables = {
   ...tables,
@@ -423,7 +384,7 @@ async function adminRequest(action, parameters = {}) {
   const { data: { session }, error: sessionError } = await db.auth.getSession();
   if (sessionError || !session?.access_token) {
     adminAuthorized = false;
-    throw new Error('Verifica tu correo para acceder a la administración.');
+    throw new Error('Inicia sesión para acceder a la administración.');
   }
   const endpoint = `${SUPABASE_URL.replace(/\/$/, '')}/functions/v1/admin-api`;
   const response = await fetch(endpoint, {
@@ -439,7 +400,9 @@ async function adminRequest(action, parameters = {}) {
   const result = await response.json().catch(() => ({}));
   if (response.status === 401 || response.status === 403) {
     adminAuthorized = false;
-    throw new Error(result.error || 'Este correo no está autorizado para administrar el sitio.');
+    revealAdmin(false);
+    if ($('#editorDialog').open) $('#editorDialog').close();
+    throw new Error(result.error || 'La sesión no tiene permisos de administración.');
   }
   if (!response.ok || !result.ok) {
     throw new Error(result.error || `Error en admin-api (HTTP ${response.status}).`);
@@ -447,74 +410,78 @@ async function adminRequest(action, parameters = {}) {
   return result;
 }
 
+function showAdminLogin(message = '') {
+  $('#adminPassword').value = '';
+  status('#accessFeedback', message);
+  if (!$('#adminAccessDialog').open) $('#adminAccessDialog').showModal();
+  $('#adminEmail').focus();
+}
+
+async function enterAdmin(session) {
+  await adminRequest('verify');
+  adminAuthorized = true;
+  forgetPendingAdmin();
+  if ($('#adminAccessDialog').open) $('#adminAccessDialog').close();
+  revealAdmin(true);
+  $('#adminIdentity').textContent = session.user?.email || 'Administrador autorizado';
+  await Promise.all([loadAdminStats(), loadAdminModule()]);
+}
+
 async function openAdminAccess() {
   if (!connected) {
     banner('Primero configura la URL y la clave publicable de Supabase en script.js.');
     return;
   }
-  // La sesión del correo confirmado se reutiliza aunque el enlace te devuelva
-  // al inicio en vez de agregar ?admin=1.
+  if (adminBusy) return;
   try {
-    const {data: {session}, error: sessionError} = await db.auth.getSession();
-    if (sessionError) throw sessionError;
-    if (!session) {
-      status('#accessFeedback', 'Introduce el correo autorizado para recibir tu enlace.');
-      if (!$('#adminAccessDialog').open) $('#adminAccessDialog').showModal();
-      $('#adminEmail').focus();
-      return;
-    }
-    await adminRequest('verify');
-    adminAuthorized = true;
-    forgetPendingAdmin();
-    if ($('#adminAccessDialog').open) $('#adminAccessDialog').close();
-    revealAdmin(true);
-    $('#adminIdentity').textContent = session.user?.email || 'Administrador autorizado';
-    await Promise.all([loadAdminStats(), loadAdminModule()]);
+    const {data: {session}, error} = await db.auth.getSession();
+    if (error) throw error;
+    if (!session) return showAdminLogin();
+    await enterAdmin(session);
   } catch (error) {
-    // Distinguimos el error de la API de un caso sin sesión.
-    status('#accessFeedback', `No se pudo comprobar el acceso: ${error.message}`);
-    if (!$('#adminAccessDialog').open) $('#adminAccessDialog').showModal();
-    $('#adminEmail').focus();
+    adminAuthorized = false;
+    revealAdmin(false);
+    showAdminLogin('Inicia sesión con tu correo y contraseña.');
   }
 }
 
-async function sendAdminLink(event) {
+async function signInAdmin(event) {
   event.preventDefault();
   if (adminBusy || !connected) return;
   const email = $('#adminEmail').value.trim().toLowerCase();
-  if (!email) return status('#accessFeedback','Ingresa tu correo electrónico.');
+  const password = $('#adminPassword').value;
+  if (!email || !password) return status('#accessFeedback','Completa el correo y la contraseña.');
   adminBusy = true;
   const button = $('#accessSubmit');
   button.disabled = true;
-  button.textContent = 'Enviando enlace…';
+  button.textContent = 'Verificando…';
+  status('#accessFeedback','');
   try {
-    // El enlace regresará a esta misma página y abrirá Administración.
-    const url = new URL(window.location.href);
-    url.searchParams.set('admin', '1');
-    url.hash = '';
-    try { localStorage.setItem(adminPendingKey, String(Date.now())); } catch { /* opcional */ }
-    const { error } = await db.auth.signInWithOtp({
-      email,
-      options: { emailRedirectTo: url.toString() }
-    });
-    if (error) throw error;
-    status('#accessFeedback', 'Revisa tu correo y abre el enlace. Al regresar al sitio se abrirá el panel; si vuelves al inicio, pulsa Administración.', 'success');
+    const {data, error} = await db.auth.signInWithPassword({email, password});
+    if (error || !data.session) throw new Error('Credenciales inválidas o acceso temporalmente limitado.');
+    await enterAdmin(data.session);
   } catch (error) {
-    forgetPendingAdmin();
-    console.error('No se pudo enviar el enlace:',error);
-    status('#accessFeedback',`No se pudo enviar el enlace: ${error.message}`);
+    adminAuthorized = false;
+    revealAdmin(false);
+    try { await db.auth.signOut({scope:'local'}); } catch { /* no se concede acceso */ }
+    showAdminLogin(error.message || 'No se pudo iniciar sesión.');
   } finally {
+    $('#adminPassword').value = '';
     adminBusy = false;
     button.disabled = false;
-    button.textContent = 'Enviar enlace a mi correo →';
+    button.textContent = 'Iniciar sesión →';
   }
 }
 
 async function signOutAdmin() {
-  if (connected) await db.auth.signOut();
   adminAuthorized = false;
   forgetPendingAdmin();
   revealAdmin(false);
+  if ($('#editorDialog').open) $('#editorDialog').close();
+  if (connected) {
+    const {error} = await db.auth.signOut({scope:'local'});
+    if (error) return banner('No se pudo cerrar la sesión en Supabase. Inténtalo nuevamente.');
+  }
   status('#accessFeedback', 'Se cerró el acceso de administración.', 'success');
 }
 
@@ -831,7 +798,8 @@ function wireEvents(){
   $('#editorForm').addEventListener('submit',saveEditor);
   $('#closeEditor').addEventListener('click',()=>$('#editorDialog').close());
   $('#cancelEditor').addEventListener('click',()=>$('#editorDialog').close());
-  $('#adminAccessForm').addEventListener('submit',sendAdminLink);
+  $('#adminAccessForm').addEventListener('submit',signInAdmin);
+  $('#adminAccessDialog').addEventListener('close',()=>{ $('#adminPassword').value=''; });
   $('#closeAccess').addEventListener('click',()=>$('#adminAccessDialog').close());
   $('#cancelAccess').addEventListener('click',()=>$('#adminAccessDialog').close());
 }
@@ -840,14 +808,14 @@ async function start(){
   wireEvents();
   initializeDb();
   if (connected) {
-    // La sesión puede resolverse un poco después del retorno desde Gmail.
-    db.auth.onAuthStateChange((event, session) => {
-      if (event === 'SIGNED_IN' && session && adminReturnExpected()) {
-        setTimeout(resumeAdminFromEmail, 0);
+    db.auth.onAuthStateChange((event) => {
+      if (event === 'SIGNED_OUT') {
+        adminAuthorized = false;
+        if (!$('#adminView').hidden) revealAdmin(false);
+        if ($('#editorDialog').open) $('#editorDialog').close();
       }
     });
-    // No esperamos las imágenes o el catálogo para procesar la sesión.
-    await resumeAdminFromEmail();
+    if (new URLSearchParams(window.location.search).get('admin') === '1') await openAdminAccess();
   }
   await Promise.all([loadPublicData(),loadPublicConfig()]);
 }

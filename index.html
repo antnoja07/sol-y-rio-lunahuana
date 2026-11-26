@@ -95,7 +95,7 @@
 
   <section id="adminView" class="admin-view" hidden aria-labelledby="adminTitle">
     <div class="container"><div class="admin-top"><div><span class="eyebrow dark"><span class="eyebrow-rule"></span> GESTIÓN DEL PROYECTO</span><h1 id="adminTitle">Panel administrativo</h1><p>Organiza el contenido de Sol y Río Lunahuaná.</p></div><div class="admin-top-actions"><span id="adminIdentity" class="admin-identity" aria-live="polite">Acceso verificado</span><button id="adminLogout" class="btn btn-outline-dark" type="button">Cerrar acceso</button><button id="backToSite" class="btn btn-outline-dark" type="button">← Ver sitio web</button></div></div>
-      <div class="admin-notice"><strong>Administración protegida:</strong> crea, edita y elimina registros directamente desde esta página. Para proteger las reservas y los mensajes, los cambios se autorizan con un enlace de correo electrónico, sin usar contraseña.</div>
+      <div class="admin-notice"><strong>Administración protegida:</strong> crea, edita y elimina registros directamente desde esta página. Para proteger las reservas y los mensajes, los cambios se autorizan mediante una sesión de correo y contraseña de un administrador autorizado.</div>
       <div class="admin-welcome"><span class="eyebrow light">CENTRO DE CONTROL</span><div class="admin-welcome-line"><div><h2>Tu negocio, a un clic.</h2><p>Gestiona experiencias, atiende reservas y responde mensajes desde un solo lugar.</p></div><div class="admin-welcome-badge">● Conectado a Supabase</div></div></div>
       <div class="admin-kpis"><article><span>🏞️</span><small>Atractivos turísticos</small><strong id="statAttractions">—</strong></article><article><span>☼</span><small>Actividades</small><strong id="statActivities">—</strong></article><article><span>✧</span><small>Paquetes</small><strong id="statPackages">—</strong></article><article><span>♧</span><small>Festividades</small><strong id="statFestivals">—</strong></article><article class="admin-kpi-highlight"><span>📅</span><small>Reservas registradas</small><strong id="statBookings">—</strong><small id="statPending">— pendientes</small></article><article class="admin-kpi-highlight"><span>✉</span><small>Mensajes recibidos</small><strong id="statMessages">—</strong><small id="statNewMessages">— nuevos</small></article></div>
       <div class="admin-content"><div class="admin-toolbar"><div><h2>Gestión del sitio</h2><p>Los cambios se guardan directamente en Supabase y se actualizan en la página.</p></div><button id="adminRefresh" class="btn btn-outline-dark" type="button">↻ Actualizar</button></div>
@@ -115,11 +115,13 @@
   <dialog id="adminAccessDialog" class="access-dialog" aria-labelledby="accessTitle">
     <form id="adminAccessForm">
       <div class="modal-top"><div><span class="eyebrow dark">ACCESO PROTEGIDO</span><h2 id="accessTitle">Área de administración</h2></div><button type="button" id="closeAccess" class="close-button" aria-label="Cerrar">×</button></div>
-      <p class="editor-intro">No necesitas una contraseña. Escribe tu correo autorizado y recibirás un enlace para acceder al panel. La dirección debe coincidir con la configurada como ADMIN_EMAIL en Supabase.</p>
+      <p class="editor-intro">Ingresa tu correo autorizado y tu contraseña. El acceso es exclusivo para los administradores; no se permite el registro público de cuentas.</p>
       <label class="access-label" for="adminEmail">Correo de administración</label>
       <input type="email" id="adminEmail" name="email" class="access-input" autocomplete="email" required placeholder="tucorreo@ejemplo.com">
+      <label class="access-label" for="adminPassword" style="margin-top:14px">Contraseña</label>
+      <input type="password" id="adminPassword" name="password" class="access-input" autocomplete="current-password" required placeholder="Tu contraseña">
       <p id="accessFeedback" class="feedback" role="status" aria-live="polite"></p>
-      <div class="modal-actions"><button class="btn btn-outline-dark" type="button" id="cancelAccess">Cancelar</button><button class="btn btn-green" id="accessSubmit" type="submit">Enviar enlace a mi correo →</button></div>
+      <div class="modal-actions"><button class="btn btn-outline-dark" type="button" id="cancelAccess">Cancelar</button><button class="btn btn-green" id="accessSubmit" type="submit">Iniciar sesión →</button></div>
     </form>
   </dialog>
 </body>
